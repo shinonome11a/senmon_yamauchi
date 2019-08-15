@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>情報ネットワーク専門演習（テーマ1: ソケットプログラミング）</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/earlyaccess/notosansjp.css" rel="stylesheet">
+    
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse bg-inverse fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Lecture</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+            </div>
+            <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    <a href="practice1.html">演習1</a>
+                </li>    
+                <li>
+                    <a href="practice2.html">演習2</a>
+                </li>        
+                <li>
+                    <a href="practice3.html">演習3</a>
+                </li>
+                <li>
+                    <a href="practice4.html">演習4</a>
+                </li>  
+                <li class="active">
+                    <a href="practice5.html">演習5</a>
+                </li>  
+                <li>
+                    <a href="practice6.html">演習6</a>
+                </li>
+              </ul>
+            </div>
+        </div> <!-- container fluid -->
+    </nav>
+
+    <div class="jumbotron">
+        <div class="container">
+            <h2>第 5 日目演習事項</h2>
+            <p>
+                UNIX (Ubuntu Linux) を用いて，次の各項目を演習として行う． 学習支援サイトに本演習に関する注意事項やヒント
+                ( <a href="http://L605-09.is.oit.ac.jp">http://L605-09.is.oit.ac.jp</a> )
+                を掲示してあるので，これをブラウザで確認しながら演習を進めなさい．
+                演習のコマンド入力や実行結果やその他記録に残すべきと思うものは，レポートを作成する際の材料となりうるので，逐一記録に残しながら進めるとよい．
+                また，まさに自分が実行したことを示す際には，スクリーンショットを活用するとよい
+            </p>
+            <p>
+                今週からTCPを用いてWebサーバー(http daemon)のプログラムを作成する。
+                WWWサービスにおいて、HTMLファイルの受け渡しに用いられるプロトコルがHTTPである。HTTPには「HTTP/0.9（俗称）」「HTTP/1.0」「HTTP/1.1」「HTTP/2」の４種類あるが、
+                本演習では単純なプロトコルであるHTTP/1.0を用い、なおかつ余計な機能を一切持たない超単純Webサーバーをまず作成する。
+            </p>
+        </div><!-- /.container -->
+    </div>
+    
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">                
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>(1) 簡易ウェブサーバを作ろう</h3></div>
+                    <div class="panel-body">
+                        <p>
+                            httpserver.cのプログラムはプログラム起動時に指定したTCPポート（デフォルト8080）で待ち受けするhttp daemonで、これは
+                        </p>
+                        <ul>
+                            <li>ブラウザからどんなコマンドを送っても要求とは関係なく「index.html」を返信する</li>
+                            <li>HTMLファイルを１つ配信すると勝手に終了してしまう</li>
+                            <li>TCPなので２人以上同時に接続できない</li>
+                        </ul>
+                        <p>
+                            などの制約がある。このプログラムをコンパイル・起動し、PC上でFireFoxを使って自身にアクセスして正常に機能することを確かめなさい。
+                            ブラウザのURL入力欄に「http://127.0.0.1:8080」などと入力する（127.0.0.1 は自分自身を指し示す特別なIPアドレス）。
+                            その際、適当なindex.htmlファイルをあらかじめ作って実行ファイルと同じディレクトリに置いておかないと動かないので注意。
+                            超簡単なindex.htmlの例をソースコードの次のリンクに掲載してあるので、それをコピー＆ペーストして各自が作成した実行ファイルと同じディレクトリに置く
+                            （ファイル名をindex.htmlとすること）。
+                        </p>
+                        <div class="panel panel-info">
+                            <div class="panel-heading">httpserver.c</div>
+                            <div class="panel-body">
+                            <pre onmousedown='return false;' onselectstart='return false;'>
+#include &lt;stdio.h&gt;
+/**
+*  穴埋め課題： 適切なヘッダファイルを指定しなさい。 
+* */
+
+#define DEFAULT_SERV_TCP_PORT 8080          /* デフォルトは、ポート番号8080で待ち受ける。*/
+
+/*
+NAME
+    httpserver -- simple http server
+
+SYNOPSIS
+    httpserver [port]
+
+DESCRIPTION
+    port: port number for listening
+*/
+int main(int argc, char** argv) {
+    int sockfd, len, s, n, port;
+    struct sockaddr_in ca;
+    char buf[1024];
+    char scode[] = "HTTP/1.0 200 OK\n";     /* ステータスコードの返信用文字列 */
+    char eoh[] = "\n";                      /* HTTPヘッダーの終わり */
+    FILE *fp;                               /* ディスク上のファイルの読み出し用ポインター */
+
+    switch (argc) {
+    case 1:
+        port = DEFAULT_SERV_TCP_PORT;
+        break;
+    case 2:
+        port = atoi(argv[1]);
+        break;
+    default:
+        fprintf(stderr, "invalid arguments.\n");
+        return EXIT_FAILURE;
+    }
+
+    /* ■　ソケットを１つ確保する */
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    /* ■　構造体caを用意し、bindし、listenする　*/
+    ca.sin_family = AF_INET;
+    ca.sin_addr.s_addr = htonl(INADDR_ANY);
+    ca.sin_port = htons(port);
+
+    /*　bindに失敗したらエラー表示して終わる */
+    if(bind(sockfd, (struct sockaddr *) &ca, sizeof(ca)) == -1) {		    
+        perror(“bind”);
+        return EXIT_FAILURE;
+    }
+
+    listen(sockfd, 5);
+
+    /* ■　accept()で接続を受け入れる。相手から接続されるとacceptを抜けて次のプログラムに進む*/
+    len = sizeof(ca);
+    s = accept(sockfd, (struct sockaddr *)&ca, (socklen_t *) &len);
+    /**
+    *  穴埋め課題： 接続元のＩＰアドレスとポート番号を画面に表示しなさい 
+    *  printf( ………… );
+    * */
+
+    /* ■　ブラウザから送られてきたGETメソッドを受けとる */
+    n = recv(s, buf, sizeof(buf), 0); 
+　　 /*　HTTPリクエストの最大1024バイトだけ読む、それ以後は無視する */
+    buf[n] = 0;
+    /**
+    *  穴埋め課題： デバッグのため、文字列 buf[] の長さと内容を画面に表示しなさい 
+    *  printf( ………… );
+    * */
+
+    /* ■　HTTP/1.0の手順に従い、まずステータスコードと空行を送出する。 */
+    send(s, scode, strlen(scode), 0);
+    send(s, eoh, strlen(eoh), 0);
+
+    /* ■　ローカルディスクの中にあるindex.htmlファイルを読み出し、全部sendする */
+    fp = fopen("index.html", "r");      /* ファイルを読出しモードで開く */
+    while ((n = fread(buf, 1, 1024, fp)) > 0) {
+        /* １バイトづつ、１回に最大1024ブロック読み、配列buf[]に格納する */
+        send(s, buf, n, 0);             /* freadで１バイト以上読めたら、読めたバイト数だけ送信 */
+    }                                   /* 読めなくなったら終わる */
+　
+    fclose(fp);
+    close(s);                           /* ファイルとネットワークソケットを閉じる */
+    return EXIT_SUCCESS;
+}                                            
+                            </pre>
+                        </div>
+                        <ul class="list-group">
+                            <a href="sample2.html" class="list-group-item active">index.html</a>
+                        </ul>                                                               
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>(2) 指定のファイルを返すウェブサーバを作ろう</h3></div>
+                    <div class="panel-body">
+                        <p>
+                            読み出すべきファイル名をブラウザのURL入力欄で指定したとき、指定のファイルを返送するように(1)のプログラムを改造する。
+                            ファイル名の指定がない時は「index.html」を送ることとする。
+                            また指定されたファイルが存在しなければ「ファイルがない」という趣旨を記載したHTMLページを返送するようにし、
+                            なおかつHTTPヘッダーの中のステータスコードを「404」に変更する。
+                            　これらをコーディングするには、ブラウザからファイル名の指定がどのように通知されているのかをよく調べる必要がある。
+                            ブラウザから送られてきたHTTPリクエストの文字列をサーバーの画面上に表示させるコードをまず追加してから作業を行いなさい。
+                        </p>
+                        <div class="panel panel-info">
+                            <div class="panel-heading">ヒント</div>
+                            <div class="panel-body">
+                                <p>本課題が，この演習の最難関です．実現するには条件分岐を適切に定め，一つ一つ丁寧に解決していく必要があります．</p>
+                                <p>まず，指定のファイルが何かを発見するには，課題 1 で出力したバッファ buf の中身を解析する必要があります．</p>
+
+                                <pre>GET /index.html HTTP/1.1</pre>
+
+                                <p>
+                                    recvでbufに受信・格納したリクエストの先頭行には，上記のような記述が存在します．
+                                    この先頭行から文字列操作で中央の"index.html"の部分を取り出すことがまず必要です．
+                                    先頭行の解析にもっとも便利な関数は sscanf です．manでその仕様を調べて，
+                                    sscanfをうまく使って、中央のパス部分を取り出しましょう．
+                                </p>
+                                <p>
+                                    パス部分が取り出せたら，後は下記の操作を順番にしていくことで，課題で求められる仕様を満たすことができます．
+                                </p>
+                                <ol type="1">
+                                    <li>パスが空""であった場合は，index.htmlを返します．</li>
+                                    <li>パスが空でない場合,ファイルが存在するかを確かめます</li>
+                                    <ol type="1">
+                                        <li>ファイルが存在しなかった場合，404のステータスコードを返し，ファイルが見つからないと言う趣旨のhtmlを返します．</li>
+                                        <li>ファイルが存在した場合，その内容を返します．
+                                    </ol>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>                       
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>(3) マルチアクセスに対応するウェブサーバを作ろう</h3></div>
+                    <div class="panel-body">
+                        <p>
+                            前回学んだfork()関数を用いて、このサーバーが同時に複数のクライアントからのアクセスをサービスできるように改造しなさい。
+                            複数アクセスを同時にサービスできることを確認するには、端末エミュレーターを２つ開いて、それぞれ同時にコマンドラインから
+                            「telnet」コマンドを用いてアクセスするとよい。
+                            telnetでWebサーバーにアクセスするには、次のように入力して試す。黄色マーカーがキーボードから入力する部分で、
+                            IPアドレス127.0.0.1は自分自身を表す。telnetでのアクセス方法は以下を参照のこと
+
+                            <pre>
+$ telnet  127.0.0.1 8080
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+GET /index.html HTTP/1.0
+&lt;ここでEnterをもう一回送る&gt;
+                            </pre>
+                            <p>上記が実行され，かつ，ウェブサーバが指示通りの動作をしている場合，続けて以下の応答がある．</p>
+                            <pre>
+HTTP/1.0 200 OK
+
+&lt;html&gt;
+    &lt;head&gt;&lt;title&gt;Sample HTML Page&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+    &lt;p&gt;This is a simple HTML page.&lt;/p&gt;&lt;hr height="1" /&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                            </pre>
+                        </p>
+                    </div>
+                    </div>                       
+    
+            </div>
+        </div> <!-- container fluid -->
+    </div>
+
+</body>
+</html>
